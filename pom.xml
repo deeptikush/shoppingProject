@@ -49,6 +49,11 @@
     <version>1.16.12</version>
     <scope>provided</scope>
 </dependency>
+		<dependency>
+			<groupId>com</groupId>
+			<artifactId>movie-catalog-service</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>

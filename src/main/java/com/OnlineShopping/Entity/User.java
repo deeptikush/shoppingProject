@@ -1,10 +1,10 @@
 package com.OnlineShopping.Entity;
 
 
+import java.util.Collection;
+import java.util.Set;
 import java.util.UUID;
-
 import com.OnlineShopping.Enums.UserType;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,8 +16,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Email;
 import lombok.Data;
 
 
@@ -36,13 +37,15 @@ public class User {
 	@Column
 	private String userName;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "address_id", referencedColumnName = "id")
-   	private Address address ;
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "userId")
+   	private Set<Address> address ;
 	
 	@Column
+	 @Digits(message="Number should contain 10 digits.", fraction = 0, integer = 10)
 	private long userPhone;
 	@Column
+	@Email(message="Enter valid Email Id.")
 	private String userEmail;
 	
 	@Column
@@ -51,10 +54,6 @@ public class User {
 	
 	
 	
-	public void setAddress(Address address)
-	{
-		this.address=address;
-		
-	}
+	
 
 }

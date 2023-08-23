@@ -15,8 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.OnlineShopping.Entity.Address;
 import com.OnlineShopping.Entity.User;
+import com.OnlineShopping.ServiceImpl.AddressServiceImpl;
 import com.OnlineShopping.ServiceImpl.UserServiceImpl;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/user")
@@ -24,9 +28,10 @@ public class UserController {
 
 	@Autowired
 	UserServiceImpl userServiceImpl;
+	@Autowired AddressServiceImpl addressServiceImpl;
 
 	@PostMapping("/addUser")
-	public String registerUser(@RequestBody User user) {
+	public String registerUser( @Valid@RequestBody User user) {
 		if (user != null) {
 			userServiceImpl.addUser(user);
 			return "add user";
@@ -55,5 +60,14 @@ public class UserController {
 		return userServiceImpl.deleteUserById(id);
 		
 	}
+	
+	@PostMapping("/userAddress")
+	public void addUserAddress(@RequestBody Address address) {
+		
+		addressServiceImpl.addAddress(address);
+		
+		
+	}
+	
 
 }
