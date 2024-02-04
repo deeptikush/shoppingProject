@@ -1,10 +1,15 @@
 package com.OnlineShopping.Entity;
 
 
-import java.util.Collection;
+
+import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import com.OnlineShopping.Enums.UserType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,10 +20,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.Email;
+
 import lombok.Data;
 
 
@@ -32,26 +35,59 @@ public class User {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name ="user_id")
 	private long userId;
 	
-	@Column
+	@Column(name="user_name")
 	private String userName;
 	
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "userId")
-   	private Set<Address> address ;
+	@OneToMany(mappedBy ="userinfo" ,cascade = CascadeType.REMOVE)
+	  	private List<Address> address ;
 	
-	@Column
-	 @Digits(message="Number should contain 10 digits.", fraction = 0, integer = 10)
+	
+	
+	 //@Digits(message="Number should contain 10 digits.", fraction = 0, integer = 10)
+	@Column(name="user_phone",unique =true)
 	private long userPhone;
-	@Column
-	@Email(message="Enter valid Email Id.")
+  	//@Email(message="Enter valid Email Id.")
+	@Column(name="user_email",unique =true, nullable=false)
 	private String userEmail;
 	
-	@Column
+	@Column(name = "password")
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private String password;
+	
+	@Column(name="gender")
+	private String gender;
+	@Column(name="user_type")
 	@Enumerated(EnumType.STRING)
 	private UserType userType;
 	
+	@Column(name ="created date")
+	private String date;
+	
+	
+	@Column(name ="active")
+	private boolean active; 
+	
+	
+	public String getPassword(){
+	   return password;
+	}
+
+
+	public void setPassword(String encryptedPassword) {
+		this.password=encryptedPassword;
+		
+	}
+
+
+	@Override
+	public String toString() {
+		return "User [uuid=" + uuid + ", userId=" + userId + ", userName=" + userName + ", address=" + address
+				+ ", userPhone=" + userPhone + ", userEmail=" + userEmail + ", password=" + password + ", gender="
+				+ gender + ", userType=" + userType + ", date=" + date + ", active=" + active + "]";
+	}
 	
 	
 	

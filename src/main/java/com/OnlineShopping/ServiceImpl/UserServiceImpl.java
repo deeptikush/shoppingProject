@@ -1,9 +1,15 @@
 package com.OnlineShopping.ServiceImpl;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.hibernate.engine.spi.SessionImplementor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +27,7 @@ public class UserServiceImpl implements UserService {
 	private  final  EntityManager entityManager;
 	@Autowired
 	UserRepository userRepository;
-	
+	BCryptPasswordEncoder bcrypt=new BCryptPasswordEncoder();
 	
 	public UserServiceImpl(EntityManager entityManager)
 	{
@@ -29,8 +35,24 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void addUser(User user) {
+	public String addUser(User user) {
+
+	
+		String encryptedPassword=bcrypt.encode(user.getPassword());
+		user.setPassword(encryptedPassword);
+		
+		LocalDateTime currentDateTime = LocalDateTime.now();  
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		
+	     user.setDate(currentDateTime.format(formatter));
+	 
+	
+		
+//         user.setDate(formatter.format(currentDateTime).toString()); 
+		
+		
 		userRepository.save(user);
+		return "user added";
 
 	}
 
@@ -75,10 +97,12 @@ public class UserServiceImpl implements UserService {
 	
 	
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public User getUser(long id) {
-		return userRepository.findById(id).get();
+		Optional<User> user= userRepository.findById(id);
+		
+		
+		return user.get();
 	}
 
 	@Override
@@ -102,6 +126,25 @@ public class UserServiceImpl implements UserService {
 
 		}
 
+	}
+	
+	public String authenticateUser( String userEmailId ,String password) {
+
+		User opUser = userRepository.userfindByEmail(userEmailId);
+		if (opUser != null) {
+			User dbUser = opUser;
+			
+			if(bcrypt.matches(password, dbUser.getPassword()))
+			
+				return "user is authenticated";
+
+			else
+
+				return "user is not authenticated";
+	}
+
+		// throw userNotFoundException("no user not found for this user email id")
+		return "unknown email id";
 	}
 
 	

@@ -11,14 +11,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.OnlineShopping.Entity.Product;
 import com.OnlineShopping.Repository.ProductRepository;
-import com.OnlineShopping.ServiceImpl.ProductServiceImpl;
+import com.OnlineShopping.Service.ProductService;
+
 
 @RestController
 @RequestMapping("/product")
 public class ProductController {
 	
 	@Autowired
-	ProductServiceImpl productServiceImpl;
+	ProductService productService;
 	@Autowired 
 	
 	ProductRepository productRepository;
@@ -27,9 +28,9 @@ public class ProductController {
 	@PostMapping("/addProduct")
 	public String addProduct(@RequestBody Product product)
 	{
-		productServiceImpl.addProduct(product);
+		productService.addProduct(product);
 		
-		return product.getProductDis()+"..."+product.getProductName()+".."+product.getProductId()+"..."+product.getDate();
+		return "prosuct sucessfully added";
 	}
 
 	@GetMapping("/allProduct")

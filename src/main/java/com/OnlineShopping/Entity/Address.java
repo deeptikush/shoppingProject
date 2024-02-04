@@ -21,28 +21,38 @@ public class Address {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column
+	@Column(name="address_id")
 	private long addressId;
 
-	@Column
+	@Column(name="pin_code")
 	private long pinCode;
 
-	@Column
+	@Column(name="street_no")
 	private String streetNo;
 
-	@Column
+	@Column(name="city")
 	private String city;
 
-	@Column
+	@Column(name="state")
 	private String state;
 
-	@Column
+	@Column(name="building_address")
 	private String buildingAddress;
 
 	
+	@Column(name="contact_no")
+	private long contactNo;
+	
 	 @ManyToOne
-	 @JoinColumn(name = "userId") 
-	 User userinfo;
+	 @JoinColumn(name = "user_id") 
+	 private User userinfo;
+
+	@Override
+	public String toString() {
+		return "Address [addressId=" + addressId + ", pinCode=" + pinCode + ", streetNo=" + streetNo + ", city=" + city
+				+ ", state=" + state + ", buildingAddress=" + buildingAddress + ", contactNo=" + contactNo
+				+ ", userinfo=" + userinfo + "]";
+	}
 
 
 	

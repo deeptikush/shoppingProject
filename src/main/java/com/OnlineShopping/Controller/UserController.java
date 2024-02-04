@@ -3,9 +3,6 @@ package com.OnlineShopping.Controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,57 +14,78 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.OnlineShopping.Entity.Address;
 import com.OnlineShopping.Entity.User;
-import com.OnlineShopping.ServiceImpl.AddressServiceImpl;
-import com.OnlineShopping.ServiceImpl.UserServiceImpl;
+import com.OnlineShopping.Repository.RoleRepository;
+import com.OnlineShopping.Service.AddressService;
+import com.OnlineShopping.Service.UserService;
+import com.OnlineShopping.Entity.Role;
 
-import jakarta.validation.Valid;
+
+
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
 	@Autowired
-	UserServiceImpl userServiceImpl;
-	@Autowired AddressServiceImpl addressServiceImpl;
+	RoleRepository roleRepository;
+	
+	@Autowired
+	UserService userService;
+	@Autowired
+	AddressService addressService;
 
 	@PostMapping("/addUser")
-	public String registerUser( @Valid@RequestBody User user) {
-		if (user != null) {
-			userServiceImpl.addUser(user);
-			return "add user";
-		}
-		return "no dtata";
+	public String registerUser(@RequestBody User user) {
+
+		return userService.addUser(user);
 	}
+	/*
+	 * public void initRoleAndUser() { Role adminRole= new Role();
+	 * adminRole.setRoleName("admin"); adminRole.setRoleDescirption("admin role");
+	 * roleRepository.save(adminRole); Role userRole= new Role();
+	 * userRole.setRoleName("user"); userRole.setRoleDescirption("user role");
+	 * roleRepository.save(userRole);
+	 * 
+	 * }
+	 */
 
 	@GetMapping("/users")
-	public List<User> getUsers(@RequestParam(value="pageNumber",required = false) int pageNumber,
-			@RequestParam(value="pageSize",required = false) int pageSize) {
+	public List<User> getUsers(@RequestParam(value = "pageNumber", required = false) int pageNumber,
+			@RequestParam(value = "pageSize", required = false) int pageSize) {
 
-		
-		return userServiceImpl.fetchUsers(pageNumber,pageSize);
+		return userService.fetchUsers(pageNumber, pageSize);
 
 	}
 
 	@GetMapping("/{id}")
 	public User getUserById(@PathVariable long id) {
 
-		return userServiceImpl.getUser(id);
+		User user= userService.getUser(id);
+
+		return user; 
+	}
+
+	@DeleteMapping("/{id}")
+	public String deleteUser(@PathVariable long id) {
+		return userService.deleteUserById(id);
 
 	}
-	@DeleteMapping("/{id}")
-	public String deleteUser(@PathVariable long id)
-	{
-		return userServiceImpl.deleteUserById(id);
-		
-	}
-	
+
 	@PostMapping("/userAddress")
 	public void addUserAddress(@RequestBody Address address) {
-		
-		addressServiceImpl.addAddress(address);
-		
-		
+
+		addressService.addAddress(address);
+
 	}
 	
+	@PostMapping("/authenticateUser")
+	public String authenticateUser(@RequestParam(value = "userEmailId", required = false) String userEmailId,
+			@RequestParam(value = "password", required = false) String password)
+	{
+		return userService.authenticateUser(userEmailId,password);
+		
+	}
+//	public String authenticateUser(@RequestParam(value = "userEmailId", required = false) String userEmailId,
+//			@RequestParam(value = "password", required = false) String password)
 
 }
